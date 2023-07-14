@@ -1,9 +1,11 @@
 import { ethers } from "ethers";
 import "./DoStake.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Contract_abi, contractAddress, initContract } from "./utils";
+import {LockShade} from "./Utils";
 
-async function stakeTokens(amount, months) {
+const emptyFn = () => 0;
+async function stakeTokens(amount, months, cb=emptyFn) {
   const contract = await initContract();
   console.log("contract:", contract);
   console.log("amount:", amount, months);
@@ -12,13 +14,16 @@ async function stakeTokens(amount, months) {
   const tx = await contract.approve(contractAddress, amountToApprove);
   console.log("tx:", tx);
   await tx.wait();
+  cb("AMOUNT_APPROVED")
   console.log("tx:", tx);
   const stakeTx = await contract.stake(amountToApprove, months);
+  cb("STAKE_HASHED")
   console.log("stakeTx:", stakeTx);
 
   console.log(`Transaction hash: ${stakeTx.hash}`);
 
   const receipt = await stakeTx.wait();
+  cb("STAKE_MINED")
   console.log(`Transaction was mined in block ${receipt.blockNumber}`);
 }
 
@@ -86,20 +91,28 @@ const RangeSlider = () => {
 };
 
 export default RangeSlider;
-export const DoStake = ({ walletAddress, getAddresses, balance, refreshBalance }) => {
+export const DoStake = ({ walletAddress, getAddresses, balance, refresh, enabled }) => {
   const [amount, setAmount] = useState("100");
-  const [months, setMonths] = useState("8");
+  const [months, setMonths] = useState("9");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await stakeTokens(amount, Number(months));
-    await refreshBalance()
+    await stakeTokens(amount, Number(months), refresh).catch(window.alert);
   };
+  console.log('enabled:', enabled)
+  useEffect(() => {
+    if (enabled){
+      refresh() // await
+    }
+  }, [enabled])
   const setLogSliderValue = (e) => setMonths(logslider(e.target.value).toFixed(0))
+  const balanceText = Math.floor(Number(balance)*10000)/10000
+  const baseAPY = 10+months/3
+  const maxAPY = 33 + months*3
   return (
-    <div className="shadow_bg">
-      <div className="stake_title">Stake</div>
-      <div>{Contract_abi.contractName}</div>
+    <div className="shadow_bg" >
+      <div className="stake_title" style={{textAlign: 'center'}}>Staking</div>
+      {/* <div>{Contract_abi.contractName}</div> */}
       <div>
       <div style={{fontSize: '0.8125rem', lineHeight: '140%', marginBottom: '0.38rem'}}>
         Stake Amount
@@ -121,9 +134,9 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refreshBalance }
         </div>
         <div style={{justifyContent: 'space-between', display: 'flex', flex:1,fontSize: '0.8125rem', width: '100%'}}>
           <div >
-            <span style={{color: '#AAAAAA'}}>Available balance:</span> {Number(balance).toFixed(5)}
+            <span style={{color: '#AAAAAA'}}>Available balance:</span> {balanceText.toFixed(5)}
           </div>
-          <div style={{color: "#ED6A14", cursor: 'pointer'}} onClick={() => 0}>
+          <div style={{color: "#ED6A14", cursor: 'pointer', fontWeight: 'bold'}} onClick={() => setAmount(balanceText.toFixed(5))}>
             MAX
           </div>
         </div>
@@ -150,20 +163,21 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refreshBalance }
         </div>
       </div>
       <div style={{fontSize: '1.125rem', fontWeight: '400', lineHeight: '140%'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Base APY</span><span>6.90%</span></div>
-        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Bonus APY from bank crashes</span><span>6.90%</span></div>
+        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Base APY</span><span>{baseAPY.toFixed(2)}%</span></div>
+        {/* <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Bonus APY from bank crashes</span><span>6.90%</span></div> */}
 
-        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Small bank</span><span>2.00%/Bank</span></div>
+        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Small bank</span><span>1.00%/Bank</span></div>
 
-        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Medium bank</span><span>14.00%/Bank</span></div>
+        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Medium bank</span><span>15.00%/Bank</span></div>
 
         <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Large bank</span><span>42.00%/Bank</span></div>
 
-        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Maximum APY</span><span>120.00%</span></div>
+        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Maximum APY</span><span>{maxAPY.toFixed(2)}%</span></div>
 
-        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Cumulated reward</span><span>12.042.000 BASH</span></div>
+        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>No crashes reward</span><span>{(Number(amount)*Math.pow((1+baseAPY/100), months/12)).toFixed(0)} BASH</span></div>
+        <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Max crashes reward</span><span>{(Number(amount)*Math.pow((1+maxAPY/100), months/12)).toFixed(0)} BASH</span></div>
       </div>
-      <button type="submit" className="filled_btn" style={{ color: "white" }}>
+      <button type="submit" className="filled_btn" style={{ color: "white", cursor: 'pointer' }} onClick={handleSubmit}>
         Stake tokens
       </button>
       {/* <Input
@@ -179,10 +193,10 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refreshBalance }
           index={0}
         />
       </form> */}
+      {!enabled && <LockShade />}
     </div>
   );
 };
-
 const Addresses = ({ walletAddress, getAddresses }) => {
   return (
     <div>

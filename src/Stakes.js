@@ -1,15 +1,33 @@
 import { ethers } from "ethers";
 import "./Stakes.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {LockShade} from "./Utils";
 
-const OutlineButton = ({text}) => {
-  return <div className="button-wrapper">
+const OutlineButton = ({text, onClick, children}) => {
+  return <div className="button-wrapper" onClick={onClick} style={{cursor: 'pointer'}}>
     <div className="button">
       <span className="button-text">{text}</span>
+      {children}
     </div>
   </div>
 }
-const StakesList = ({ items, getStakes, doUnstake }) => {
+const UnstakeButton = ({o, idx, doUnstake}) => {
+  const [pressed, setPressed] = useState(false)
+  return Number(o.closedAt) === 0 ? <OutlineButton text={"Unstake"} onClick={() => {
+    if (new Date(Number(o.endAt) * 1000)<new Date()) {
+      setPressed(true)
+      doUnstake(idx);
+    } else if (window.confirm("Are you sure you want to unstake, you will take a 60% penalty with unstaking?")) {
+      setPressed(true)
+      doUnstake(idx)
+    } else {
+    } 
+  }}>{pressed && <div class="spinner" style={{marginLeft: 4}}/>}</OutlineButton> : <div style={{color: 'green'}}>Closed</div>
+  // {/* <a className="unstake_cta" href="#" onClick={() => doUnstake(idx)}>Unstake</a> */}
+
+}
+const StakesList = ({ items, doUnstake, mode }) => {
+  console.log('mode:', mode)
   return items ? (
     <table style={{width: '100%'}}>
       <thead>
@@ -25,34 +43,33 @@ const StakesList = ({ items, getStakes, doUnstake }) => {
       </tr>
       </thead>
       <tbody>
-      {items.map((o, idx) => {
+      {Object.entries(items).filter(([idx,o]) => mode=== 'ONGOING' ? Number(o.closedAt) === 0 : true).map(([idx, o]) => {
         if (o === null) {
           return <div key={idx}>You have no stakes</div>;
         }
-        console.log(o.baseAPY)
+        // console.log(o)
         return (
           <tr key={idx}>
-            <td key={idx} onClick={() => doUnstake(idx)}>
+            <td >
               #{idx}
             </td>
-            <td key={idx} onClick={() => doUnstake(idx)}>
+            <td >
               {ethers.formatEther(o.amount)}
             </td>
-            <td key={idx} onClick={() => doUnstake(idx)}>
+            <td >
               {new Date(Number(o.createdAt) * 1000).toLocaleDateString()}
             </td>
-            <td key={idx} onClick={() => doUnstake(idx)}>
+            <td >
               {new Date(Number(o.endAt) * 1000).toLocaleDateString()}
             </td>
-            <td key={idx} onClick={() => doUnstake(idx)}>
+            <td >
               {Number(o.baseAPY)}%
             </td>
-            <td key={idx} onClick={() => doUnstake(idx)}>
+            <td >
               {Number(o.maximumAPY)}%
             </td>
-            <td key={idx} onClick={() => doUnstake(idx)}>
-              <OutlineButton text={"Unstake"}/>
-              {/* <a className="unstake_cta" href="#" onClick={() => doUnstake(idx)}>Unstake</a> */}
+            <td >
+              <UnstakeButton o={o} idx={idx} doUnstake={doUnstake}/>
             </td>
           </tr>
         );
@@ -74,17 +91,15 @@ const SelectableStakes = ({mode, setMode}) => {
   <MyButton name='ALL_HISTORY' label={'Stake History'} mode={mode} setMode={setMode} />
 </div>
 }
-export const Stakes = ({ items, getStakes, doUnstake }) => {
+export const Stakes = ({ items, doUnstake, enabled }) => {
   const [mode, setMode] = useState('ONGOING');
 
   return (
     <div className="staking_bg">
-      <button onClick={getStakes} className="btn">
-        Get stakes
-      </button>
       <SelectableStakes mode={mode} setMode={setMode} />
       {/* <div>Stake Bank Crash Tracker</div> */}
-      <StakesList items={items} getStakes={getStakes} doUnstake={doUnstake} />
+      <StakesList items={items} doUnstake={doUnstake} mode={mode}/>
+      {!enabled && <LockShade />}
     </div>
   );
 };
