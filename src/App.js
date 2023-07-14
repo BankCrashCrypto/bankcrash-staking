@@ -32,6 +32,7 @@ function App() {
   const [walletAddress, setWalletAddress] = useState([]);
   const [stakes, setStakes] = useState([]);
   const [balance, setBalance] = useState(null);
+
   const getAddresses = async (force) => {
     if (window.ethereum) {
       // Check if metamask installed
@@ -145,23 +146,23 @@ function App() {
 
   return (<div className="App"
               style={{
+                position: 'relative',
+                minHeight: '100vh',
                 display: "flex",
-                padding: 100,
-                width: '90%',
+                width: '100%',
                 height: '100%',
                 color: "white",
                 flexDirection: "column",
                 justifyContent: 'center',
+                alignItems: 'center',
                 gap: 16,
-                alignItems: 'center'
               }}>
-        <div style={{display: 'flex', gap: 16, justifyContent: 'center', width: '90%'}}>
+        <div style={{marginTop: 'auto', display: 'flex', gap: 16, justifyContent: 'center', width: '100%',}}>
         {connected !== 'CONNECTED' && <ConnectMetamask connected={connected} getAddresses={getAddresses}/>}
         <DoStake walletAddress={walletAddress} getAddresses={getAddresses} balance={balance} refresh={refresh} enabled={connected === 'CONNECTED'}/>
         </div>
         <Stakes items={stakes} getStakes={refresh} doUnstake={doUnstake}  enabled={connected === 'CONNECTED'}/>
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', backgroundColor: 'red'}}>asd</div>
-        <div style={{color:'white', fontSize: "1.125rem", textAlign: 'center', }}>This site is shared on <a style={{color: 'teal'}} href={"https://github.com/BankCrashCrypto/bankcrash-staking"}>github</a> to be 100% transparent.</div>
+        <div style={{color:'white', marginTop: 'auto',marginBottom: 8, fontSize: "1.125rem", textAlign: 'center', }}>This site is shared on <a style={{color: 'teal'}} href={"https://github.com/BankCrashCrypto/bankcrash-staking"}>github</a> to be 100% transparent.</div>
     </div>
   );
 }

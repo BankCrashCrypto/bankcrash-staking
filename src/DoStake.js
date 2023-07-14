@@ -106,9 +106,10 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refresh, enabled
     }
   }, [enabled])
   const setLogSliderValue = (e) => setMonths(logslider(e.target.value).toFixed(0))
-  const balanceText = Math.floor(Number(balance)*10000)/10000
-  const baseAPY = 10+months/3
-  const maxAPY = 33 + months*3
+  const balanceText = Math.floor(Number(balance)*10000)/10000;
+  const baseAPY = 10+months/3;
+  const maxAPY = 69 + months*2;
+
   return (
     <div className="shadow_bg" >
       <div className="stake_title" style={{textAlign: 'center'}}>Staking</div>
@@ -151,7 +152,8 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refresh, enabled
             className="stake__field"
             id={"months_amount"}
             value={months || ""}
-            onChange={e => setMonths(e.target.value)}
+            onChange={e => setMonths(e.target.value > 120 ?120 :
+                e.target.value<3 ? 3 : e.target.value)}
           />
           <div >months</div>
         </div>
@@ -167,11 +169,8 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refresh, enabled
         {/* <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Bonus APY from bank crashes</span><span>6.90%</span></div> */}
 
         <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Small bank</span><span>1.00%/Bank</span></div>
-
         <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Medium bank</span><span>15.00%/Bank</span></div>
-
         <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>+ Large bank</span><span>42.00%/Bank</span></div>
-
         <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>Maximum APY</span><span>{maxAPY.toFixed(2)}%</span></div>
 
         <div style={{display: 'flex', justifyContent: 'space-between', flex: 1}}><span>No crashes reward</span><span>{(Number(amount)*Math.pow((1+baseAPY/100), months/12)).toFixed(0)} BASH</span></div>
