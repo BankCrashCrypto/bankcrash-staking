@@ -94,6 +94,8 @@ const SelectableStakes = ({mode, setMode}) => {
 export const Stakes = ({ items, doUnstake, enabled }) => {
   const [mode, setMode] = useState('ONGOING');
 
+  console.log('Stakes enabled:', enabled)
+
   return (
     <div className="staking_bg">
       <SelectableStakes mode={mode} setMode={setMode} />
