@@ -177,7 +177,7 @@ const ConnectMetamask = ({connected, getAddresses}) => {
     connected === 'LOCKED' ? 
       <button className="filled_btn" style={{ color: "white", cursor: 'pointer' }} href={"#"} onClick={getAddresses}>Metamask is Locked. Please unlock!</button>: 
     connected === 'METAMASK_NON_INSTALLED' ?    
-      <a style={{width: '100%', textAlign: 'center', color: '#EF6918', fontWeight: 'bold'}} href={"https://metamask.io/download/"}>Metamask not installed. Please install</a>: null}
+      <div style={{marginLeft: 12, marginRight: 12, marginBottom: 12}}><a style={{width: '100%', textAlign: 'center', color: '#EF6918', fontWeight: 'bold', }} href={"https://metamask.io/download/"} target="_blank">Metamask not installed. Please install</a></div>: null}
     
   </div>
   </div>
