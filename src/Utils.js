@@ -14,13 +14,12 @@ export const LockShade = ({connected, getAddresses}) => <>
 const ConnectMetamask = ({connected, getAddresses}) => {
   return <div>
     {connected === null || connected === 'UNLOCKED' ? 
-      <button className="filled_btn" style={{ color: "white", cursor: 'pointer', fontSize: "1.125rem" }} href={"#"} onClick={getAddresses}>Connect Metamask</button> : 
+      <button className="filled_btn" style={{ color: "white", cursor: 'pointer', fontSize: ".925rem" }} href={"#"} onClick={getAddresses}>Connect Metamask</button> : 
     connected === 'LOCKED' ? 
-      <button className="filled_btn" style={{ color: "white", cursor: 'pointer' }} href={"#"} onClick={getAddresses}>Metamask is Locked. Please unlock!</button>: 
+      <button className="filled_btn" style={{ color: "white", cursor: 'pointer', fontSize: ".925rem" }} href={"#"} onClick={getAddresses}>Metamask is Locked. Please unlock!</button>: 
     connected === 'METAMASK_NON_INSTALLED' ?    
-      <div style={{marginLeft: 12, marginRight: 12, marginBottom: 12}}><a style={{width: '100%', textAlign: 'center', color: '#EF6918', fontWeight: 'bold', }} href={"https://metamask.io/download/"} target="_blank">Metamask not installed. Please install</a></div>: null
+      <div style={{marginLeft: 12, marginRight: 12, marginBottom: 12, fontSize: ".925rem"}}><a style={{width: '100%', textAlign: 'center', color: '#EF6918', fontWeight: 'bold', }} href={"https://metamask.io/download/"} target="_blank">Metamask not installed. Please install</a></div>: null
       }
-  <div style={{fontSize: 14, textAlign: 'center', marginTop: 12}}>Start staking!</div>
-
+    <div style={{fontSize: 14, textAlign: 'center', marginTop: 12}}>Start staking!</div>
   </div>
 }

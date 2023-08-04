@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { Stakes } from "./Stakes";
 import { DoStake } from "./DoStake";
 import { initContract } from "./utils";
+import {BanksHeatmap} from "./TreemapComp";
 
 
 
@@ -150,15 +151,17 @@ function App() {
                 minHeight: '100vh',
                 display: "flex",
                 width: '100%',
-                height: '100%',
                 color: "white",
                 flexDirection: "column",
                 justifyContent: 'center',
                 alignItems: 'center',
                 gap: 16,
               }}>
-        <div style={{marginTop: 'auto', display: 'flex', gap: 16, justifyContent: 'center', width: '100%',}}>
-        <DoStake walletAddress={walletAddress} getAddresses={getAddresses} balance={balance} refresh={refresh} connected={connected}/>
+        <div style={{marginTop: 'auto', display: 'flex', gap: 16, justifyContent: 'center', width: '90%', flex: 1, paddingTop: 120}}>
+          <DoStake walletAddress={walletAddress} getAddresses={getAddresses} balance={balance} refresh={refresh} connected={connected}/>
+          <div style={{display: 'flex', flex: 1}}>
+          <BanksHeatmap />
+          </div>
         </div>
         <Stakes items={stakes} getStakes={refresh} doUnstake={doUnstake}  enabled={connected === 'CONNECTED'}/>
         <div style={{color:'white', marginTop: 'auto',marginBottom: 8, fontSize: "1.125rem", textAlign: 'center', }}>This site is shared on <a style={{color: 'teal'}} href={"https://github.com/BankCrashCrypto/bankcrash-staking"}>github</a> to be 100% transparent.</div>
