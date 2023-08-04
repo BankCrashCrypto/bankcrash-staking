@@ -158,8 +158,7 @@ function App() {
                 gap: 16,
               }}>
         <div style={{marginTop: 'auto', display: 'flex', gap: 16, justifyContent: 'center', width: '100%',}}>
-        {connected !== 'CONNECTED' && <ConnectMetamask connected={connected} getAddresses={getAddresses}/>}
-        <DoStake walletAddress={walletAddress} getAddresses={getAddresses} balance={balance} refresh={refresh} enabled={connected === 'CONNECTED'}/>
+        <DoStake walletAddress={walletAddress} getAddresses={getAddresses} balance={balance} refresh={refresh} connected={connected}/>
         </div>
         <Stakes items={stakes} getStakes={refresh} doUnstake={doUnstake}  enabled={connected === 'CONNECTED'}/>
         <div style={{color:'white', marginTop: 'auto',marginBottom: 8, fontSize: "1.125rem", textAlign: 'center', }}>This site is shared on <a style={{color: 'teal'}} href={"https://github.com/BankCrashCrypto/bankcrash-staking"}>github</a> to be 100% transparent.</div>
@@ -170,18 +169,5 @@ function App() {
 //           Update bankcrash event
 //         </button> */}
         
-const ConnectMetamask = ({connected, getAddresses}) => {
-  return <div style={{display: 'flex', alignItems: 'center'}}><div className="shadow_bg">
-    <div style={{fontSize: 14, textAlign: 'center'}}>Start staking!</div>
-    {connected === null || connected === 'UNLOCKED' ? 
-      <button className="filled_btn" style={{ color: "white", cursor: 'pointer', fontSize: "1.125rem" }} href={"#"} onClick={getAddresses}>Connect Metamask</button> : 
-    connected === 'LOCKED' ? 
-      <button className="filled_btn" style={{ color: "white", cursor: 'pointer' }} href={"#"} onClick={getAddresses}>Metamask is Locked. Please unlock!</button>: 
-    connected === 'METAMASK_NON_INSTALLED' ?    
-      <div style={{marginLeft: 12, marginRight: 12, marginBottom: 12}}><a style={{width: '100%', textAlign: 'center', color: '#EF6918', fontWeight: 'bold', }} href={"https://metamask.io/download/"} target="_blank">Metamask not installed. Please install</a></div>: null}
-    
-  </div>
-  </div>
-}
 
 export default App;

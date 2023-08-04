@@ -91,10 +91,10 @@ const RangeSlider = () => {
 };
 
 export default RangeSlider;
-export const DoStake = ({ walletAddress, getAddresses, balance, refresh, enabled }) => {
+export const DoStake = ({ walletAddress, getAddresses, balance, refresh, connected }) => {
   const [amount, setAmount] = useState("100");
   const [months, setMonths] = useState("9");
-
+  const enabled= connected === 'CONNECTED';
   const handleSubmit = async (e) => {
     e.preventDefault();
     await stakeTokens(amount, Number(months), refresh).catch(window.alert);
@@ -192,7 +192,7 @@ export const DoStake = ({ walletAddress, getAddresses, balance, refresh, enabled
           index={0}
         />
       </form> */}
-      {!enabled && <LockShade />}
+      {!enabled && <LockShade connected={connected} getAddresses={getAddresses}/>}
     </div>
   );
 };
