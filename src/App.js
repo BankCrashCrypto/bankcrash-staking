@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Stakes } from "./Stakes";
 import { DoStake } from "./DoStake";
-import { initContract } from "./utils";
+import { initContract } from "./ContractUtils";
 import {BanksHeatmap} from "./TreemapComp";
 
 

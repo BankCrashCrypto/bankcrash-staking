@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import "./DoStake.css";
 import { useEffect, useState } from "react";
-import { Contract_abi, contractAddress, initContract } from "./utils";
+import { Contract_abi, contractAddress, initContract } from "./ContractUtils";
 import {LockShade} from "./Utils";
 
 const emptyFn = () => 0;

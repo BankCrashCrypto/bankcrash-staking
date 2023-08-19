@@ -1,6 +1,7 @@
-import { isValidDateValue } from '@testing-library/user-event/dist/utils';
-import React, {useEffect, useState} from 'react';
-import { Treemap, Tooltip, ResponsiveContainer } from 'recharts';
+import { isValidDateValue } from "@testing-library/user-event/dist/utils";
+import React, { useEffect, useState } from "react";
+import { Treemap, Tooltip, ResponsiveContainer } from "recharts";
+import "./TreemapComp.css";
 
 // Your data should be an array of objects, where each object represents a stock
 // Each object should have a `name` property (the stock's name)
@@ -118,20 +119,18 @@ export default TreeMapComponent;
 
 export const BanksHeatmap = () => {
   const [data, setData] = useState();
-
+  const myAsyncFn = async () => {
+    const response = await fetch("https://api.bankcrash.gg:8080/bank_mdds");
+    // console.log('response:', response)
+    const data = await response.json();
+    console.log("data:", data);
+    setData(data);
+  };
   useEffect(() => {
-    fetch('https://api.bankcrash.gg:8080/bank_mdds')
-      .then(response => {
-        return response.json(); // Explicitly return the promise
-      })
-      .then(data => {
-        setData(data);
-        console.log(data)
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+    myAsyncFn().catch((error) => {
+      console.warn("Error fetching data:", error);
+    });
   }, []);
 
-  return <TreeMapComponent data_source={data} />
-}
+  return <TreeMapComponent data_source={data} />;
+};
